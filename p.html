@@ -22,6 +22,7 @@
         <a href="#resume">Resume</a>
         <a href="#contact">Contact</a>
       </div>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">☾</button>
     </nav>
   </div>
 </header>
@@ -190,7 +191,29 @@
 </footer>
 
 <script>
-  document.getElementById('year').textContent = new Date().getFullYear();
+  const yearElement = document.getElementById('year');
+  const themeToggle = document.getElementById('theme-toggle');
+  const storedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = storedTheme || (prefersDark ? 'dark' : 'light');
+
+  document.documentElement.setAttribute('data-theme', theme);
+  yearElement.textContent = new Date().getFullYear();
+
+  const updateThemeToggle = () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    themeToggle.textContent = isDark ? '☀' : '☾';
+    themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+  };
+
+  updateThemeToggle();
+
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    updateThemeToggle();
+  });
 
   document.querySelectorAll('.btn, .project-link, .contact-links a').forEach((link) => {
     link.addEventListener('click', () => {
